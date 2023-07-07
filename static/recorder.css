@@ -1,0 +1,31 @@
+.btn-record {
+    border: none;
+    padding: 25px;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.btn-record-green {
+    background-color: #19ceae;
+}
+
+.btn-record-red {
+    background-color: #dc3545;
+}
+
+.btn-record img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.record-spinner {
+    color: white;
+    width: 30px;
+    height: 30px
+}
+
+.mic-img {
+    width: 30px;
+}
