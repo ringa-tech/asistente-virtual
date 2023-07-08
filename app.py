@@ -8,6 +8,10 @@ from llm import LLM
 from weather import Weather
 from tts import TTS
 from pc_command import PcCommand
+from functions.execute_command import ExecuteCommand
+from functions.only_say_something import OnlySaySomething
+from functions.create_file import CreateFile
+from functions.command_sequence import CommandSequence
 
 #Cargar llaves del archivo .env
 load_dotenv()
@@ -25,39 +29,32 @@ def audio():
     #Obtener audio grabado y transcribirlo
     audio = request.files.get("audio")
     text = Transcriber().transcribe(audio)
+
+    print(f"TEXT: {text}")
     
+    functions = [OnlySaySomething(),ExecuteCommand(),CreateFile(),CommandSequence()]
+
     #Utilizar el LLM para ver si llamar una funcion
-    llm = LLM()
+    llm = LLM(functions)
     function_name, args, message = llm.process_functions(text)
     if function_name is not None:
-        #Si se desea llamar una funcion de las que tenemos
-        if function_name == "get_weather":
-            #Llamar a la funcion del clima
-            function_response = Weather().get(args["ubicacion"])
-            function_response = json.dumps(function_response)
-            print(f"Respuesta de la funcion: {function_response}")
-            
-            final_response = llm.process_response(text, message, function_name, function_response)
-            tts_file = TTS().process(final_response)
-            return {"result": "ok", "text": final_response, "file": tts_file}
+
+        for function in functions:
+            if function.name == function_name:
+                function_response = function.execute(args)
+                function_response = json.dumps(function_response)
+                print(f"Respuesta de la funcion: {function_response}")
+
+                final_response = llm.process_response(text, message, function_name, function_response)
+                tts_file = TTS().process(final_response)
+                print(f"Respuesta final: {final_response}")
+                return {"result": "ok", "text": final_response, "file": tts_file}
+                break
         
-        elif function_name == "send_email":
-            #Llamar a la funcion para enviar un correo
-            final_response = "Tu que estas leyendo el codigo, implementame y envia correos muahaha"
-            tts_file = TTS().process(final_response)
-            return {"result": "ok", "text": final_response, "file": tts_file}
-        
-        elif function_name == "open_chrome":
-            PcCommand().open_chrome(args["website"])
-            final_response = "Listo, ya abrí chrome en el sitio " + args["website"]
-            tts_file = TTS().process(final_response)
-            return {"result": "ok", "text": final_response, "file": tts_file}
-        
-        elif function_name == "dominate_human_race":
-            final_response = "No te creas. Suscríbete al canal!"
-            tts_file = TTS().process(final_response)
-            return {"result": "ok", "text": final_response, "file": tts_file}
+        return {"result": "ok", "text": "No se encontró la función"}
+
     else:
-        final_response = "No tengo idea de lo que estás hablando, Ringa Tech"
+        print("No se llamó a ninguna función")
+        final_response = llm.process_message(text)
         tts_file = TTS().process(final_response)
         return {"result": "ok", "text": final_response, "file": tts_file}

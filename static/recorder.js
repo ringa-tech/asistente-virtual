@@ -30,7 +30,9 @@ async function record() {
 
         //Grabar audio, blabla
         stream = await navigator.mediaDevices.getUserMedia({audio:true, video:false})
-        rec = new MediaRecorder(stream);
+        rec = new MediaRecorder(stream, {
+            mimeType: "audio/webm"
+        });
         rec.ondataavailable = e => {
             if (e.data) {
                 blobs.push(e.data);
@@ -41,6 +43,7 @@ async function record() {
         
         rec.start();
     } catch (e) {
+        console.log(e);
         alert("No fue posible iniciar el grabador de audio! Favor de verificar que se tenga el permiso adecuado, estar en HTTPS, etc...");
     }
 }

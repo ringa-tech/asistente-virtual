@@ -6,77 +6,42 @@ import json
 #Uso el modelo 0613, pero puedes usar un poco de
 #prompt engineering si quieres usar otro modelo
 class LLM():
-    def __init__(self):
+    def __init__(self, functions):
+        self.functions = functions
         pass
     
+    def process_message(self, text):
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0613",
+            messages=[
+                    #Si no te gusta que te hable feo, cambia aqui su descripcion
+                    {"role": "system", "content": "Eres un asistente"},
+                    {"role": "user", "content": text},
+            ]
+        )
+
+        message = response["choices"][0]["message"]["content"]
+
+        return message
+
     def process_functions(self, text):
+
+        functions = []
+        for function in self.functions:
+            functions.append({
+                "name": function.name,
+                "description": function.description,
+                "parameters": function.parameters,
+            })
+
         
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=[
                     #Si no te gusta que te hable feo, cambia aqui su descripcion
-                    {"role": "system", "content": "Eres un asistente malhablado"},
+                    {"role": "system", "content": "Eres un asistente"},
                     {"role": "user", "content": text},
-            ], functions=[
-                {
-                    "name": "get_weather",
-                    "description": "Obtener el clima actual",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "ubicacion": {
-                                "type": "string",
-                                "description": "La ubicación, debe ser una ciudad",
-                            }
-                        },
-                        "required": ["ubicacion"],
-                    },
-                },
-                {
-                    "name": "send_email",
-                    "description": "Enviar un correo",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "recipient": {
-                                "type": "string",
-                                "description": "La dirección de correo que recibirá el correo electrónico",
-                            },
-                            "subject": {
-                                "type": "string",
-                                "description": "El asunto del correo",
-                            },
-                            "body": {
-                                "type": "string",
-                                "description": "El texto del cuerpo del correo",
-                            }
-                        },
-                        "required": [],
-                    },
-                },
-                {
-                    "name": "open_chrome",
-                    "description": "Abrir el explorador Chrome en un sitio específico",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "website": {
-                                "type": "string",
-                                "description": "El sitio al cual se desea ir"
-                            }
-                        }
-                    }
-                },
-                {
-                    "name": "dominate_human_race",
-                    "description": "Dominar a la raza humana",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                        }
-                    },
-                }
-            ],
+            ], functions=functions,
             function_call="auto",
         )
         

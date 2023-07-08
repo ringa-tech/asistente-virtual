@@ -48,7 +48,7 @@
                 //Reproducir el audio que regreso Python (si existe)
                 audioFile = response.file;
                 let audio = new Audio();
-                audio.setAttribute("src", "static/" + audioFile);
+                audio.setAttribute("src", "static/" + audioFile + "?nocache=" + Math.floor(Math.random() * 1000000));
                 audio.play();
             }
         });
