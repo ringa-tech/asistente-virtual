@@ -9,6 +9,7 @@ class TTS():
         self.key = os.getenv('ELEVENLABS_API_KEY')
     
     def process(self, text):
+        print(f"Texto a convertir: {text}")
         CHUNK_SIZE = 1024
         #Utiliza la voz especifica de Bella
         #Me robe este codigo de su pagina hoh
