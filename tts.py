@@ -1,18 +1,30 @@
-import os
-from dotenv import load_dotenv
 import requests
 
 #Texto a voz. Esta impl utiliza ElevenLabs
 class TTS():
-    def __init__(self):
-        load_dotenv()
-        self.key = os.getenv('ELEVENLABS_API_KEY')
+    voice_dict = {
+        "Adam": "pNInz6obpgDQGcFmaJgB",
+        "Antoni": "ErXwobaYiN019PkySvjV",
+        "Arnold": "VR6AewLTigWG4xSOukaG",
+        "Bella": "EXAVITQu4vr4xnSDxMaL",
+        "Domi": "AZnzlk1XvdvUeBnXmlld",
+        "Elli": "MF3mGyEYCl7XYWbV9V6O",
+        "Josh": "TxGEqnHWrfWFTfGW9XjX",
+        "Rachel": "21m00Tcm4TlvDq8ikWAM",
+        "Sam": "yoZ06aMxZJJ28mfd3POQ"
+    }
+
+    def __init__(self, key):
+        self.key = key
     
-    def process(self, text):
+    def voices(self):
+        return self.voice_dict
+
+    def process(self, text, voice):
         CHUNK_SIZE = 1024
         #Utiliza la voz especifica de Bella
         #Me robe este codigo de su pagina hoh
-        url = "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL"
+        url = "https://api.elevenlabs.io/v1/text-to-speech/" + self.voice_dict[voice]
 
         headers = {
             "Accept": "audio/mpeg",
@@ -39,3 +51,12 @@ class TTS():
                     f.write(chunk)
                     
         return file_name
+
+if __name__ == '__main__':
+    import os
+    from dotenv import load_dotenv
+    load_dotenv()
+    elevenlabs_key = os.getenv('ELEVENLABS_API_KEY')
+    tts = TTS(elevenlabs_key)
+    print(tts.voices())
+    tts.process("Esta es una respuesta", "Bella")
