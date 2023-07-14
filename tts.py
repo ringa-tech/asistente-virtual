@@ -20,7 +20,7 @@ class TTS():
     def voices(self):
         return self.voice_dict
 
-    def process(self, text):
+    def process(self, text, voice):
         CHUNK_SIZE = 1024
         #Utiliza la voz especifica de Bella
         #Me robe este codigo de su pagina hoh
