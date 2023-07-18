@@ -61,6 +61,12 @@ function doPreview() {
             body: fd,
         })
         .then((response) => response.json())
+        .then((response) => {
+            if (!!response?.website) {
+                window.open(response.website)
+            }
+            return response
+        })
         .then(audioResponseHandler)
         .catch(err => {
             //Puedes hacer algo más inteligente aquí

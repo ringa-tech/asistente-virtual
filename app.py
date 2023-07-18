@@ -7,7 +7,6 @@ from transcriber import Transcriber
 from llm import LLM
 from weather import Weather
 from tts import TTS
-from pc_command import PcCommand
 
 #Cargar llaves del archivo .env
 load_dotenv()
@@ -48,10 +47,9 @@ def audio():
             return {"result": "ok", "text": final_response, "file": tts_file}
         
         elif function_name == "open_chrome":
-            PcCommand().open_chrome(args["website"])
             final_response = "Listo, ya abrí chrome en el sitio " + args["website"]
             tts_file = TTS().process(final_response)
-            return {"result": "ok", "text": final_response, "file": tts_file}
+            return {"result": "ok", "text": final_response, "file": tts_file, "website": args["website"]}
         
         elif function_name == "dominate_human_race":
             final_response = "No te creas. Suscríbete al canal!"
@@ -61,3 +59,7 @@ def audio():
         final_response = "No tengo idea de lo que estás hablando, Ringa Tech"
         tts_file = TTS().process(final_response)
         return {"result": "ok", "text": final_response, "file": tts_file}
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")

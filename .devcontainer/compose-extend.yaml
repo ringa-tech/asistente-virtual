@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  asistente:
+    build:
+      dockerfile: Dockerfile
+      context: ../
+      target: base
+    volumes:
+      - ../.:/workspace:cached
+    ports:
+      - 5000:5000
+    env_file:
+      - ../.env
+  
