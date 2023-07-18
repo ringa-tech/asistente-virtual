@@ -1,0 +1,42 @@
+{
+	"name": "Asistente virtual en flask",
+	"service": "asistente",
+
+	"dockerComposeFile": [
+        "compose-extend.yaml"
+    ],
+
+	"remoteEnv": {
+		"PYTHONUNBUFFERED": "1"
+	},
+
+
+	"workspaceFolder": "/workspace",
+
+	"forwardPorts": [5000],
+
+	"shutdownAction": "stopCompose",
+	
+	"postCreateCommand": "pip3 install autopep8",
+	"postStartCommand": "python app.py",
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"mutantdino.resourcemonitor",
+				"ms-python.autopep8",
+				"ms-python.python",
+				"ms-python.vscode-pylance"
+			],
+			"settings": {
+				"editor.defaultFormatter": "ms-python.autopep8",
+				"editor.formatOnSave": false,
+				"editor.codeActionsOnSave": {
+					"source.organizeImports": false
+				}
+			}
+		}
+	},
+	"overrideCommand": true,
+	"remoteUser": "root"
+}
